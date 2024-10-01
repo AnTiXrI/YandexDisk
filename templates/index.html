@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yandex.Disk Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .files-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .files-list li {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .file-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-type {
+            font-size: 14px;
+            color: #666;
+            margin-right: 15px;
+        }
+
+        .file-download {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .file-download:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Просмотр файлов Яндекс.Диск</h1>
+        <form method="POST">
+            <input type="text" name="public_key" placeholder="Введите публичную ссылку" required>
+            <button type="submit">Получить файлы</button>
+        </form>
+
+        {% if files %}
+        <h2>Список файлов:</h2>
+        <ul class="files-list">
+            {% for file in files %}
+            <li>
+                <span class="file-name">{{ file['name'] }}</span>
+                <div class="file-actions">
+                    <span class="file-type">{{ file['type'] }}</span>
+                    {% if file['type'] == 'file' %}
+                    <form action="{{ url_for('download_file') }}" method="POST" style="display: inline;">
+                        <input type="hidden" name="file_url" value="{{ file['file'] }}">
+                        <input type="hidden" name="file_name" value="{{ file['name'] }}">
+                        <button type="submit" class="file-download">Скачать</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</body>
+</html>
